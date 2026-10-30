@@ -1,0 +1,5 @@
+
+/* Real catalogue photography: the illustration remains as a graceful fallback. */
+.product-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.product-image:has(.product-photo:not([hidden])) .product-art-circle,.product-image:has(.product-photo:not([hidden])) .product-symbol{opacity:0}
+.product-ribbon,.quick-add{z-index:2}
