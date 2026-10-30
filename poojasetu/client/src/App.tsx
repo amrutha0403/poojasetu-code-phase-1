@@ -36,6 +36,9 @@ export default function App() {
           Omit<Product, "pricePaise"> & {
             pricePaise?: number;
             price_paise?: number;
+            image?: string | null;
+            image_url?: string | null;
+            image_refs?: Array<string | { url?: string | null }> | null;
           }
         >;
       }>;
@@ -45,6 +48,13 @@ export default function App() {
         const mappedProducts: Product[] = payload.data.map((product) => ({
           ...product,
           pricePaise: product.price_paise ?? product.pricePaise ?? 0,
+          image:
+            product.image_url ??
+            product.image ??
+            (typeof product.image_refs?.[0] === "string"
+              ? product.image_refs[0]
+              : product.image_refs?.[0]?.url) ??
+            "",
         }));
 
         setProducts(mappedProducts);
@@ -166,6 +176,18 @@ export default function App() {
             {filtered.map((product, index) => <article className="product-card" key={product.id}>
               <div className={`product-image image-${index % 6}`}>
                 <div className="product-art-circle" />
+                {product.image && (
+                  <img
+                    className="product-photo"
+                    src={product.image}
+                    alt={product.name}
+                    loading="lazy"
+                    decoding="async"
+                    onError={(event) => {
+                      event.currentTarget.hidden = true;
+                    }}
+                  />
+                )}
                 <span className="product-symbol">{product.category === "Flowers" ? "✿" : product.category === "Pooja kits" ? "♧" : product.category === "Fruits" ? "❋" : "✧"}</span>
                 {product.featured && <span className="product-ribbon">A favourite</span>}
                 <button className="quick-add" aria-label={`Add ${product.name} to basket`} onClick={() => addProduct(product.id)}><Plus size={19} /></button>
